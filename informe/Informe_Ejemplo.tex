@@ -1,0 +1,313 @@
+%%======== TEMPLATE INFORMES ESTILO FCFM ========
+% Autor: Elisa Paz Kauffmann Figueroa
+% Estudiante de la carrera de Ingeniería Civil en Ciencias de la Computación
+% de la Faculta de Ciencias Físicas y Matemáticas FCFM de la Universidad de % Chile.
+%%===============================================
+
+\documentclass[14pt,letterpaper,hidelinks]{extarticle}
+%\usepackage[ansinew]{inputenc}
+\usepackage[utf8x]{inputenc}
+%\usepackage[latin1]{inputenc}
+\usepackage[spanish]{babel}
+\usepackage[letterpaper,includeheadfoot, top=1cm, bottom=3.0cm, right=2.0cm, left=2.0cm]{geometry}
+\renewcommand{\familydefault}{\sfdefault}
+
+\usepackage{svg}
+
+\usepackage{graphicx}
+\usepackage{color}
+\usepackage{hyperref}
+\usepackage{amssymb}
+\usepackage{url}
+%\usepackage{pdfpages}
+\usepackage{fancyhdr}
+\usepackage{hyperref}
+\usepackage{subfig}
+\usepackage{indentfirst}
+\usepackage{titlesec}
+\titleformat*{\section}{\large\bfseries}
+\titleformat*{\subsection}{\normalsize\bfseries}
+
+\usepackage{listings} %Codigo
+\lstset{language=C, tabsize=4,framexleftmargin=5mm,breaklines=true}
+
+\begin{document}
+\thispagestyle{empty}
+\renewcommand*\listtablename{Índice de tablas}
+\renewcommand{\contentsname}{\'Indice}
+\renewcommand*{\refname}{}
+
+%\begin{sf}
+% --------------- ---------PORTADA --------------------------------------------
+\newpage
+\pagestyle{fancy}
+\fancyhf{}
+%-------------------- CABECERA ---------------------
+\hbox{\includegraphics[scale=0.3]{img/fcfm_dcc_png.png} }
+%------------------ TÍTULO -----------------------
+\vspace*{4cm}
+\begin{center}
+\Huge  {Tarea 2 - Comerciales}\\
+\vspace{1cm}
+\Large {CC5204 - Búsqueda por contenido de Imágenes y Videos}\\
+
+
+\vspace{1cm}
+\end{center}
+%----------------- NOMBRES ------------------------
+\begin{flushright}
+\begin{table}[h]
+	\large
+	\centering
+	\begin{tabular}{ll}
+		Alumnos: & Patricio Isbej\\
+				& Elisa Kauffmann\\
+		Profesor: & Juan Manuel Barrios\\
+		Ayudante: & Sebastián Ferrada Aliaga\\
+		Fecha: & 28 de abril de 2016
+	\end{tabular}
+\end{table}
+\end{flushright}
+
+% ·············· ENCABEZADO - PIE DE PAGINA ············
+\newpage
+\pagestyle{fancy}
+\fancyhf{}
+
+%Encabezado
+%\fancyhead[L]{\rightmark}
+\fancyhead[L]{\small \rm \textit{Sección \nouppercase\rightmark}} %Izquierda
+\fancyhead[R]{\small \rm \textbf{\thepage}} %Derecha
+
+
+%\fancyfoot[L]{\small \rm \textit{Pie de página - Izquierda}} %Izquierda
+%\fancyfoot[R]{\small \rm \textit{Pie de página - Derecha}} %Derecha
+%\fancyfoot[C]{\thepage} %Centro
+
+\renewcommand{\sectionmark}[1]{\markright{\thesection.\ #1}}
+\renewcommand{\headrulewidth}{0.5pt}
+%\renewcommand{\footrulewidth}{0.5pt}
+
+% =============== INDICE ===============
+%
+\tableofcontents
+\listoffigures
+\listoftables
+
+% =============== SECCIONES Y SUBSECCIONES ===============
+\newpage
+\section{Resumen}
+\section{Hipótesis}
+\section{Diseño e implementación}
+
+
+\textbf{Para ejecutar los tests de cada estructura:}
+Para ver el correcto funcionamiento de cada estructuras se implementaron pequeños tests individuales que las construyen y realizan una búsqueda a partir de un texto y una palabra proveídos directamente por el usuario.
+
+A continuación se describen los pasos a seguir para probar cada estructura.
+
+	\begin{itemize}
+		\item PatriciaTree y Autómata
+		\begin{enumerate}
+			\item Para probar el patricia tree, se debe abrir el archivo 			\verb+PatriciaTree.java+ ubicado en el paquete 									\verb+patriciatree+. Para probar el autómata se debe abrir el archivo \verb+PatternSearchAutomaton.java+ ubicado en el paquete \verb+patternsearchautomaton+.
+
+			\item Para especificar el texto sobre el cual se realizará la búsqueda, se debe ir al main al final del archivo y allí, asignar a la variable \verb+text+, entre comillas (`` ''), una frase cuyas palabras estén separadas por espacios. \textbf{NO} se deben incluir espacios ni al comienzo ni al final de la frase.
+
+			\item Para especificar la palabra que se desea buscar, en el mismo main se debe asignar a la variable \verb+word+, entre comillas (`` '') una palabra. \textbf{NO} se debe incluir espacios ni al principio ni al final.
+			\item Ejecutar.
+		\end{enumerate}
+
+		\item Suffix Tree
+			\begin{enumerate}
+				\item Abrir el archivo \verb+SuffixTree.java+ ubicado en el paquete \verb+suffixtree+.
+
+				\item Comentar la línea 20 y descomentar la línea 24.
+
+				\item Idéntico al paso 3 descrito en la subsección anterior.
+
+				\item Idéntico al paso 4 descrito en la subsección anterior.
+				
+				\item Ejecutar.
+			\end{enumerate}
+\end{itemize}
+\newpage
+
+\textbf{Para ejecutar el programa de pruebas sobre libros}
+\begin{enumerate}
+	\item Abrir el archivo \verb+SuffixTree.java+ ubicado en el paquete \verb+suffixtree+ y asegurarse de que la línea 20 esté descomentada y la línea 24 esté comentada.
+	
+	\item Abrir el archivo \verb+Main.java+ ubicado en el paquete \verb+main+.
+
+	\item En la línea 24, especificar la ruta del archivo de texto donde se guardarán los resultados.
+
+	\item En la línea 27, especificar la ruta del directorio donde se encuentra la carpeta \verb+libros+ incluído en la carpeta principal de la tarea.
+	
+	\item Ejecutar.
+
+\end{enumerate}
+
+
+\section{Experimentos y resultados}
+
+  
+\section{Análisis}
+
+
+%%==================== IMAGENES =====================
+%% ················ IMAGEN DOBLE ·················
+%\begin{figure}[ht!] \centering
+%\subfloat[Logo UChile]{\includegraphics[scale=0.2]{img/escudoU.pdf}}
+%\hspace{1cm} %Espacio horizontal
+%\subfloat[Logo FCFM]{\includegraphics[scale=0.45]{img/fcfm.png}}
+%\caption{Ejemplo de imagen doble}\label{img1}
+%\end{figure}
+%%··········································
+%
+%
+%A continuación la figura \ref{img2} presenta otra forma de agregar imágenes
+%
+%% ················ IMAGENES SIMPLES·················
+%\begin{figure}[ht!]
+%\centering \includegraphics[scale=0.2]{img/escudoU.pdf}
+%\caption{Escudo de la Universidad de Chile} \label{img2}
+%\end{figure}
+
+%%--------------------------
+%
+%\begin{figure}[ht!]
+%\centering 
+%\captionsetup{justification=centering,margin=2cm}
+%\includegraphics[scale=0.2]{img/fotos_alma/bunkers.JPG}
+%\caption{Burros salvajes junto a los bunkers del campamento donde aloja el personal de OSF} 
+%\label{campamento}
+%\end{figure}  
+
+%\begin{figure}[ht!]
+%\centering \includegraphics[scale=0.2]{img/fotos_alma/cancha_casino.JPG}
+%\caption{Multicancha y casino de OSF} 
+%\label{cancha}
+%\end{figure}  
+
+%----------------------------
+%\begin{figure}[ht!]
+%\centering
+%\hspace*{-2cm}
+%\captionsetup{justification=centering,margin=2cm}
+%\includegraphics[scale=0.3]{img/figure_2.pdf}
+%\caption{Ejemplo de visualización de un perfil de temperatura usando datos de agosto de 2010} 
+%\label{surftemp_fig}
+%\end{figure}
+%\begin{figure}
+%\centering
+%\hspace*{-2cm}
+%\captionsetup{justification=centering,margin=2cm}
+%\includegraphics[scale=0.3]{img/figure_3.pdf}
+%\caption{Ejemplo de visualización de un perfil de temperatura usando datos de agosto de 2010} 
+%\label{intliq_fig}
+%\end{figure}
+%%··········································
+
+
+
+%%============== TABLAS ===============
+%\begin{table}[h]
+% \centering
+% \caption{Headers, identificadores y descripción}
+% \begin{tabular}{|| c | c | p{7	cm}||} 
+% \hline
+% Identificador de header & Tipo de medición & Descripción \\ [0.5ex] 
+% \hline\hline
+% 10 & - & No se usa (tampoco se describe en el manual)\\
+% \hline
+% 80 & - & No se usa (tampoco se describe en el manual) \\
+% \hline
+% 100 & 101 & Tipo de medición y título de los 4 tipos de perfiles\\ 
+% \hline
+% 200 & 201 & Header para mediciones meteorológicas a nivel de superficie\\
+% \hline
+% 300 & 301 & Header para mediciones escalares e integradas\\
+% \hline
+% 400 & 401, 402, 403, 404 & Ángulo de observación y arreglo de valores de 			altura, la varible independientele (58 valores, de 0 a 10 km), para todos 		los perfiles.\\
+% \hline
+% \end{tabular}
+%\end{table}
+%\newpage
+%
+%Las siguientes cuatro filas contienen el tipo de medición ``101", y especifican el tipo de medición para los cuatro tipos de perfiles.
+%
+%\begin{table}[h]
+% \centering
+% \caption{Tipo de perfil y datos}
+% \begin{tabular}{||c|c|c|c|c||} 
+% \hline
+% N° de medición & Fecha/Tiempo & 100 &	Tipo de medición & Título \\ [0.5ex] 
+% \hline\hline
+% 1	& 10/07/14 22:07:14 & 101 & 401 & Temperature(K) \\
+% \hline
+% 2	& 10/07/14 22:07:14 & 101 & 402 & Vapor Density $(g/m^3)$ \\
+% \hline
+% 3	& 10/07/14 22:07:14 & 101 & 403 & Liquid Density $(g/m^3)$ \\
+% \hline
+% 4	& 10/07/14 22:07:14 & 101 & 404 & Relative Humidity (\%) \\
+% \hline
+% \end{tabular}
+%\end{table}
+%
+%El resto de las filas son mediciones (de tipo 201, 301, 401, 402, 403 y 404). \textbf{Estas son las medidas que van a hacer almacenadas en la base de datos}
+%\begin{table}[h]
+% \centering
+% \caption{Ejemplo de mediciones meteorológicas a nivel de superficie y su correspondiente header}
+% \begin{tabular}{||c|c|c|c|c|c|c|c||} 
+% \hline
+% Record & Date/Time & 200 & Tamb(K) & Rh(\%) & Pres(mb) & Tir(K) & Rain \\ [0.5ex] 
+% \hline\hline
+% 25 & 10/07/14 22:08:13 & 201 & 276.032 & 10.13 & 557.48 & 191.09 & 0 \\
+% \hline
+% \end{tabular}
+%\end{table}
+%
+%\newpage
+%\begin{table}[h]
+% \centering
+% \caption{Ejemplo de mediciones de valores scalares e integrados y su correspondiente header}
+% \begin{tabular}{||c|c|c|c|c|c|c||} 
+% \hline
+% Record & Date/Time & 300 &	Int. Vapor(cm) & Int. Liquid(mm) & Cloud Base(km) \\ [0.5ex] 
+% \hline\hline
+% 42	& 10/07/14 22:08:56 & 301 & 0.077 & 0 & -1 \\
+% \hline
+% \end{tabular}
+%\end{table}
+%
+%\begin{table}[h]
+% \centering
+% \caption{Ejemplo de perfiles y sus correspondientes headers}
+% \begin{tabular}{||c|c|c|c|c|c|c||} 
+% \hline
+% Record & Date/Time & 400 &	LV2 Processor(angle) & 0 & ... & 10 \\ [0.5ex] 
+% \hline\hline
+% 46 & 10/07/14 22:09:41 & 401 &	Zenith & 276.017 & ... & 259.11 \\
+% \hline
+% 53	& 10/07/14 22:09:43 & 402 &	Angle Scan(N) &	0.623 & ... & 0.007 \\
+% \hline
+% 57	& 10/07/14 22:09:43 & 403 &	Angle Scan(S) &	0.021 & ... & 0.005 \\ 
+% \hline
+% 61	& 10/07/14 22:09:43 & 404 &	Angle Scan(A) &	2.805 & ... & 0.336 \\
+% \hline
+% \end{tabular}
+%\end{table}
+
+
+% ============= REFERENCIAS ==============
+%\newpage
+%
+%\section{Referencias} 
+%\begin{thebibliography}{99}
+%	\bibitem{nodoPag} R. Jacob Baker, \textit{CMOS. Circuit Design, Layout, and Simulation}, 2nd ed., USA: IEEE Press, 2005
+%	\bibitem{Bojan} asdasdas
+%	
+%\end{thebibliography}
+
+
+% ============= FIN DE DOCUMENTO ==============
+\end{document}

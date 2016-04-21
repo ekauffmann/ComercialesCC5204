@@ -3,6 +3,16 @@
 *.avi
 *.mp4
 
+# Informe
+*.aux
+*.lof
+*.log
+*.lot
+*.out
+*.synctex.gz
+*.toc
+
+
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]

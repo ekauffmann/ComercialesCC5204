@@ -4,6 +4,9 @@ import os
 import csv
 import datetime
 
+#### TO DO
+# agregar numero de frame a cada linea de los descriptores
+
 freq = int(sys.argv[1])
 zonas = (int(sys.argv[2]), int(sys.argv[3]))
 bins = int(sys.argv[4])

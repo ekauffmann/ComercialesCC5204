@@ -1,24 +1,24 @@
-import cv2
-import os
-
-import csv
-array=[
-    [1,2,3,4],
-    [5,6,7,8],
-    [9,10,11,12]]
-
-with open('eggs.csv', 'wb') as csvfile:
-    spamwriter = csv.writer(csvfile, delimiter=',',
-                            quotechar='|')
-    spamwriter.writerow(array)
-    spamwriter.writerow(array)
-    spamwriter.writerow(array)
-
-with open('eggs.csv', 'rb') as csvfile:
-    spamreader = csv.reader(csvfile, delimiter=',', quotechar='|')
-    for row in spamreader:
-       #print ', '.join(row)
-        print row[0][0]
+# import cv2
+# import os
+#
+# import csv
+# array=[
+#     [1,2,3,4],
+#     [5,6,7,8],
+#     [9,10,11,12]]
+#
+# with open('eggs.csv', 'wb') as csvfile:
+#     spamwriter = csv.writer(csvfile, delimiter=',',
+#                             quotechar='|')
+#     spamwriter.writerow(array)
+#     spamwriter.writerow(array)
+#     spamwriter.writerow(array)
+#
+# with open('eggs.csv', 'rb') as csvfile:
+#     spamreader = csv.reader(csvfile, delimiter=',', quotechar='|')
+#     for row in spamreader:
+#        #print ', '.join(row)
+#         print row[0][0]
 
 #
 # zonas=(2,4)
@@ -44,3 +44,12 @@ with open('eggs.csv', 'rb') as csvfile:
 # #         cv2.imshow('frame', zona)
 # #         cv2.waitKey(0)
 # # cv2.destroyAllWindows()
+
+import csv
+file="scotiabank_desc.csv"
+with open("descriptores/f30z2,2b32/comerciales/"+file) as csvfile:
+        reader = csv.reader(csvfile, delimiter=',')
+        frames = [map(float,item) for item in reader]
+        print frames[15][2]
+        print len(frames)
+        print len(frames[0])

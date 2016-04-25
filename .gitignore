@@ -2,8 +2,7 @@
 .idea/
 *.avi
 *.mp4
-*.p
-descriptores/
+pruebas/
 
 # Informe
 *.aux

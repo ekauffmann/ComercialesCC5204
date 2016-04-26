@@ -5,6 +5,8 @@ import csv
 import datetime
 import numpy as np
 
+# TO DO convertir blaTXT a npy y csv a numpytxt
+
 freq = int(sys.argv[1])
 zonas = (int(sys.argv[2]), int(sys.argv[3]))
 bins = int(sys.argv[4])
@@ -46,7 +48,7 @@ def describeFolder(path, newPath):
 
 
             frame_count+=1
-        np.savetxt(newPath +"/"+path+"/"+file[:-4]+".txt", video_desc)
+        np.savetxt(newPath +"/"+path+"/"+file[:-4]+".txt", video_desc[1:])
         video_capture.release()
 
 time_ini = datetime.datetime.now()

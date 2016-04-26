@@ -3,7 +3,6 @@ import cv2
 import numpy as np
 import sys
 import datetime
-import csv
 
 
 
@@ -22,16 +21,14 @@ def compare(path):
         comercial_id+=1
 
 
-    np.savetxt("pruebas/"+path+"/comercial_dict.txt", np.array(comercial_array), fmt="%s", delimiter="\t")
+    np.save("pruebas/"+path+"/comercial_dict.npy", np.array(comercial_array), fmt="%s", delimiter="\t")
 
     time_ini = datetime.datetime.now()
 
     for file in os.listdir("pruebas/"+path+"/base"):
         matches = np.zeros(2)
-        base_desc = np.loadtxt("pruebas/"+path+"/base/"+file)
-        count = 0
+        base_desc = np.load("pruebas/"+path+"/base/"+file)
         for base_frame in base_desc:
-            if count%500==0: print count
             min_dist = float("inf")
             best_com = ""
             best_frame = 0
@@ -46,12 +43,10 @@ def compare(path):
                     i+= 1
 
             matches = np.vstack((matches, [best_com, best_frame]))
-            count+=1
 
     time_end = datetime.datetime.now()
     np.save("pruebas/"+path+"/matches.npy",matches[1:].astype(int))
     np.savetxt("pruebas/"+path+"/compare_time.txt", [str(time_end-time_ini)], fmt="%s")
-    print matches[1:].astype(int)
 
 if len(sys.argv) > 1:
     compare(sys.argv[1])

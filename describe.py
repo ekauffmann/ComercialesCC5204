@@ -14,7 +14,8 @@ dims = (720,400)
 x= dims[0]/zonas[0]
 y= dims[1]/zonas[1]
 
-config= "f"+ sys.argv[1] +"z"+ sys.argv[2] +","+sys.argv[3]+"b"+sys.argv[4]
+config= "freq%szone%s,%sbins%s" % (sys.argv[1], sys.argv[2], sys.argv[3], sys.argv[4])
+
 newpath = r"pruebas/"+config
 
 if not os.path.exists(newpath):
@@ -48,7 +49,7 @@ def describeFolder(path, newPath):
 
 
             frame_count+=1
-        np.savetxt(newPath +"/"+path+"/"+file[:-4]+".txt", video_desc[1:])
+        np.save(newPath +"/"+path+"/"+file[:-4]+".npy", video_desc[1:])
         video_capture.release()
 
 time_ini = datetime.datetime.now()

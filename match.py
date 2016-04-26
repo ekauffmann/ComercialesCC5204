@@ -1,7 +1,4 @@
-import os
-import cv2
 import numpy as np
-import math
 tolerance = 0.8
 
 def myHamming(a1, a2):
@@ -12,12 +9,9 @@ def myHamming(a1, a2):
     return dist
 
 def prettyTime(s):
-    secs = s
-    hours = int(secs/3600)
-    secs -= hours*3600
-    mins = int(secs/60)
-    secs -= mins*60
-    return str(hours)+":"+str(mins)+":"+str(secs)
+    mins, secs = divmod(s, 60)
+    hours, mins = divmod(mins, 60)
+    return "%d:%02d:%02d" % (hours, mins, secs)
 
 dict = np.loadtxt("pruebas/f30z2,2b32/comercial_dict.txt",
                   dtype={'names': ['id', 'name', 'frame_count'],
@@ -33,7 +27,10 @@ for com in dict:
 matches = np.load("pruebas/f30z2,2b32/matches.npy")
 
 i = 0
+count= np.zeros(len(dict))
+
 while i < len(matches):
+
     com_id = matches[i][0]
     best_frame = matches[i][1]
     if (i + dict[com_id]['frame_count'] >= len(matches)) or best_frame > i:
@@ -42,7 +39,14 @@ while i < len(matches):
     mask = masks[com_id]
     window = matches[i-best_frame:i-best_frame+dict[com_id]['frame_count']]
     dist = myHamming(mask,window)
-    if(dist <= dict[com_id]['frame_count']*tolerance):
-        print prettyTime(i*30/29.97)+" "+dict[com_id]['name'] +" " +str(matches[i]) + str(dist) + " "+str(dict[com_id]['frame_count'])
-        i = i-best_frame+dict[com_id]['frame_count']
+    thisCom_framecount = dict[com_id]['frame_count']
+    if(dist <= thisCom_framecount*tolerance):
+        count[com_id]+=1
+        print "%s %s %s %d %d" % (prettyTime(i*30/29.97), dict[com_id]['name'], str(matches[i]), dist, thisCom_framecount)
+        i = i-best_frame+thisCom_framecount
     i+=1
+
+for i in range(len(dict)):
+    print "%s %d" % (dict[i]['name'], count[i])
+
+print np.sum(count).astype(int)

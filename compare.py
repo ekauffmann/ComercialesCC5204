@@ -14,14 +14,14 @@ def compare(path):
     comercial_id = 0
 
     for file in os.listdir("pruebas/"+path+"/comerciales"):
-        frames = np.loadtxt("pruebas/"+path+"/comerciales/"+file)
+        frames = np.load("pruebas/"+path+"/comerciales/"+file)
         comercial = [[comercial_id, file, frames]]
         comerciales += comercial
         comercial_array += [[comercial_id, file, len(frames)]]
         comercial_id+=1
 
 
-    np.save("pruebas/"+path+"/comercial_dict.npy", np.array(comercial_array), fmt="%s", delimiter="\t")
+    np.savetxt("pruebas/"+path+"/comercial_dict.txt", np.array(comercial_array), fmt="%s", delimiter="\t")
 
     time_ini = datetime.datetime.now()
 

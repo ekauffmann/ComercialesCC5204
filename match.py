@@ -1,5 +1,6 @@
 import numpy as np
 import sys
+
 freq = int(sys.argv[1])
 zonas = (int(sys.argv[2]), int(sys.argv[3]))
 bins = int(sys.argv[4])
@@ -39,27 +40,34 @@ for com in dict:
 matches = np.load("pruebas/" + config + "/matches.npy")
 
 i = 0
-while i < len(matches):
+with open("pruebas/"+config+"/playlist.m3u", 'w') as pls:
 
-    com_id = matches[i][0]
-    best_frame = matches[i][1]
-    if (i + dict[com_id]['frame_count'] >= len(matches)) or best_frame > i:
+    while i < len(matches):
+
+        com_id = matches[i][0]
+        best_frame = matches[i][1]
+        if (i + dict[com_id]['frame_count'] >= len(matches)) or best_frame > i:
+            i+=1
+            continue
+        mask = masks[com_id]
+        window = matches[i-best_frame:i-best_frame+dict[com_id]['frame_count']]
+        dist = myHamming(mask,window)
+        com_fc = dict[com_id]['frame_count']
+        if(dist <= com_fc*tolerance):
+            count[com_id]+=1
+            times[com_id]+= [i-best_frame]
+            #print "%s %s %s %d %d" % (prettyTime(i*30/29.97), dict[com_id]['name'], str(matches[i]), dist, com_fc)
+            print str((i-best_frame)*freq/29.97002997) + " "+ str((i-best_frame+com_fc)*freq/29.97002997) + " " + dict[com_id]['name']
+            pls.write("#EXTVLCOPT:start-time=%d\n" % ((i-best_frame)*freq/29.97002997))
+            pls.write("#EXTVLCOPT:stop-time=%d\n" % ((i-best_frame+com_fc-1)*freq/29.97002997))
+            pls.write("../../base/mega-2014_04_25T22_00_07.mp4\n")
+            i = i-best_frame+com_fc
+
         i+=1
-        continue
-    mask = masks[com_id]
-    window = matches[i-best_frame:i-best_frame+dict[com_id]['frame_count']]
-    dist = myHamming(mask,window)
-    thisCom_framecount = dict[com_id]['frame_count']
-    if(dist <= thisCom_framecount*tolerance):
-        count[com_id]+=1
-        times[com_id]+= [i-best_frame]
-        #print "%s %s %s %d %d" % (prettyTime(i*30/29.97), dict[com_id]['name'], str(matches[i]), dist, thisCom_framecount)
-        print str((i-best_frame)*10/29.97002997) + " "+ str((i-best_frame+dict[com_id]['frame_count'])*10/29.97002997) + " " + dict[com_id]['name']
-        i = i-best_frame+thisCom_framecount
 
-    i+=1
+
 print str(np.sum(count).astype(int)) + " ocurrencias"
 for i in range(len(dict)):
     print "%s %d" % (dict[i]['name'], count[i])
     for j in times[i]:
-        print "\t" + str(j*10/29.97) + "\t-> " + str(prettyTime(j*10/29.97))
+        print "\t" + str(j*freq/29.97002997) + "\t-> " + str(prettyTime(j*freq/29.97002997))

@@ -1,4 +1,11 @@
 import numpy as np
+import sys
+freq = int(sys.argv[1])
+zonas = (int(sys.argv[2]), int(sys.argv[3]))
+bins = int(sys.argv[4])
+dims = (720,400)
+config= "freq%szone%s,%sbins%s" % (sys.argv[1], sys.argv[2], sys.argv[3], sys.argv[4])
+
 tolerance = 0.8
 
 def myHamming(a1, a2):
@@ -13,7 +20,7 @@ def prettyTime(s):
     hours, mins = divmod(mins, 60)
     return "%d:%02d:%02d" % (hours, mins, secs)
 
-dict = np.loadtxt("pruebas/f10z2,2b32/comercial_dict.txt",
+dict = np.loadtxt("pruebas/" + config + "/comercial_dict.txt",
                   dtype={'names': ['id', 'name', 'frame_count'],
                          'formats': ['i', 'S32', 'i']}, delimiter="\t")
 
@@ -29,7 +36,7 @@ for com in dict:
     times += [[]]
 
 
-matches = np.load("pruebas/f10z2,2b32/matches.npy")
+matches = np.load("pruebas/" + config + "/matches.npy")
 
 i = 0
 while i < len(matches):

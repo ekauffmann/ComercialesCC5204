@@ -1,4 +1,11 @@
 import numpy as np
+import sys
+freq = int(sys.argv[1])
+zonas = (int(sys.argv[2]), int(sys.argv[3]))
+bins = int(sys.argv[4])
+dims = (720,400)
+config= "freq%szone%s,%sbins%s" % (sys.argv[1], sys.argv[2], sys.argv[3], sys.argv[4])
+
 tolerance = 0.8
 
 def myHamming(a1, a2):
@@ -13,22 +20,25 @@ def prettyTime(s):
     hours, mins = divmod(mins, 60)
     return "%d:%02d:%02d" % (hours, mins, secs)
 
-dict = np.loadtxt("pruebas/f30z2,2b32/comercial_dict.txt",
+dict = np.loadtxt("pruebas/" + config + "/comercial_dict.txt",
                   dtype={'names': ['id', 'name', 'frame_count'],
                          'formats': ['i', 'S32', 'i']}, delimiter="\t")
 
 masks = []
+times = []
+count= np.zeros(len(dict))
+
 for com in dict:
     a = [com[0]]*com[2]
     b = range(0, com[2])
     asd = np.transpose(np.array([a,b]))
     masks += [np.transpose(np.array([a,b]))]
+    times += [[]]
 
-matches = np.load("pruebas/f30z2,2b32/matches.npy")
+
+matches = np.load("pruebas/" + config + "/matches.npy")
 
 i = 0
-count= np.zeros(len(dict))
-
 while i < len(matches):
 
     com_id = matches[i][0]
@@ -42,11 +52,14 @@ while i < len(matches):
     thisCom_framecount = dict[com_id]['frame_count']
     if(dist <= thisCom_framecount*tolerance):
         count[com_id]+=1
-        print "%s %s %s %d %d" % (prettyTime(i*30/29.97), dict[com_id]['name'], str(matches[i]), dist, thisCom_framecount)
+        times[com_id]+= [i-best_frame]
+        #print "%s %s %s %d %d" % (prettyTime(i*30/29.97), dict[com_id]['name'], str(matches[i]), dist, thisCom_framecount)
+        print str((i-best_frame)*10/29.97002997) + " "+ str((i-best_frame+dict[com_id]['frame_count'])*10/29.97002997) + " " + dict[com_id]['name']
         i = i-best_frame+thisCom_framecount
-    i+=1
 
+    i+=1
+print str(np.sum(count).astype(int)) + " ocurrencias"
 for i in range(len(dict)):
     print "%s %d" % (dict[i]['name'], count[i])
-
-print np.sum(count).astype(int)
+    for j in times[i]:
+        print "\t" + str(j*10/29.97) + "\t-> " + str(prettyTime(j*10/29.97))

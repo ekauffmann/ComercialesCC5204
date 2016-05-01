@@ -7,7 +7,7 @@ bins = int(sys.argv[4])
 dims = (720,400)
 config= "freq%szone%s,%sbins%s" % (sys.argv[1], sys.argv[2], sys.argv[3], sys.argv[4])
 
-tolerance = 0.8
+tolerance = long(sys.argv[4])/100
 
 def myHamming(a1, a2):
     dist = 0
@@ -65,9 +65,9 @@ with open("pruebas/"+config+"/playlist.m3u", 'w') as pls:
 
         i+=1
 
-
-print str(np.sum(count).astype(int)) + " ocurrencias"
+with open("pruebas/"+config+"/ocurrencias"+str(tolerance)+".txt", 'w') as oc:
+oc.write(str(np.sum(count).astype(int)) + " ocurrencias"+"\n")
 for i in range(len(dict)):
-    print "%s %d" % (dict[i]['name'], count[i])
+    oc.write("%s %d" % (dict[i]['name'], count[i])+"\n")
     for j in times[i]:
-        print "\t" + str(j*freq/29.97002997) + "\t-> " + str(prettyTime(j*freq/29.97002997))
+        oc.write("\t" + str(j*freq/29.97002997) + "\t-> " + str(prettyTime(j*freq/29.97002997))+"\n")

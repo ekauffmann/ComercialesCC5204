@@ -12,6 +12,7 @@ pruebas/
 *.out
 *.synctex.gz
 *.toc
+*.dvi
 
 
 # Byte-compiled / optimized / DLL files

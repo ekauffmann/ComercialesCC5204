@@ -117,6 +117,8 @@ y número de bins de los histogramas. También se experimentó con distintos niv
 
 Se concluye que el método usado reporta resultados de manera más eficaz usando una tolerancia más bien holgada en vez de estricta, independiente de la configuración. Usando una tolerancia del 80\%, de las configuraciones 100\% eficaces, la más eficiente en tiempo es aquella que usa una frecuencia de muestreo de 1 cada 20 frames, 1 zona e histogramas de 16 bins.
 
+La empresa que realizó el mayor gasto en publicidad fue la que hizo los comerciales de Limon Soda, con un tiempo al aire de 128 segundos.
+
 \section{Diseño e implementación}
 Se implementa un detector de comerciales que señala cuántas veces fue emitido cada comercial durante las 4 horas de programación, determinando exactamente el inicio y
 fin de cada aparición. Para ello se divide el trabajo en 3 pasos: 
@@ -159,7 +161,7 @@ El código se encuentra en el archivo \verb+describe.py+
 \subsection{Búsqueda por similitud}
 Durante esta etapa, usando los descriptores creados anteriormente, por cada frame del video de 4 horas se encuentra el frame del comercial que más se le parece. Para ello se comparan todos los vectores descriptores de cada comercial contra cada frame del video de 4 horas, utilizando distancia Manhattan. Para facilitar el procesamiento se crea un diccionario que guarda, por cada comercial, su título, un número identificador y la cantidad de frames procesados. Un ejemplo de uno de los diccionarios creados se pueden observar en el cuadro~\ref{tab:dict}.\\
 
-\begin{table}[]
+\begin{table}[ht!]
 \centering
 \begin{tabular}{@{}ccc@{}}
 \toprule
@@ -186,7 +188,7 @@ Específicamente, el programa realiza los siguientes pasos:
 \item Se carga el descriptor del programa de 4 horas y se compara cada frame contra todos los frames de los 10 comerciales. Para medir la similitud entre vectores descriptores se utiliza distancia Manhattan (utilizando la función \verb+norm+ de \verb+OpenCV+ con el parámetro \verb+NORM_L1+). Así se va construyendo un vector de ``calces'' con tantas filas como frames del programa de 4 horas procesados. Cada fila contiene el índice del frame y el identificador del comercial que más se parece al frame del programa.
 \item El vector de ``calces'' se guarda en un archivo \verb+.npy+ para ser usado en el paso siguiente   
 \end{enumerate} 
-\begin{table}[]
+\begin{table}[ht!]
 \centering
 \begin{tabular}{@{}ccc@{}}
 \toprule
@@ -222,7 +224,7 @@ Detalladamente, la implementación lleva a cabo los siguientes pasos:
 \item Al encontrar un comercial, se guarda el número del frame inicial y final del calce y se calcula el tiempo de inicio y fin del comercial. Estos datos se guardan en un archivo \verb+.m3u+ para crear la lista de reproducción que reporta las detecciones.
 \end{enumerate}
 
-\begin{table}[]
+\begin{table}[ht!]
 \centering
 \begin{tabular}{@{}cc@{}}
 \toprule
@@ -265,7 +267,34 @@ Se realizan tests ejecutando \verb+describe.py+, \verb+compare.py+ y \verb+match
 
 Para facilitar la ejecución, se crea el script \verb+run_descriptors.sh+ que para cada combinación ejecuta los 3 archivos y guarda los resultados y metadata de manera ordenada en distintos directorios.\\
 
-La eficiencia de las distintas configuraciones se observa en la figura~\ref{fig:experimentos}, mientras que la eficacia se puede ver en el cuadro~\ref{tab:eficacia}. Un cuadro con el detalle de los falsos positivos y falsos negativos se puede observar en el cuadro~\ref{tab:eficaciaTabla} en la sección~\ref{anexos}. Anexos
+Es importante destacar que la etapa 1, la de descripción es la que tomó más tiempo para todas las configuraciones. Las etapas de comparación y detección no tomaron más de 1 minuto en total para cada configuración.\\
+
+Con respecto al tiempo al aire de cada comercial, se pueden observar los resultados en el cuadro~\ref{tab:tiempoAlAire}.
+Se concluye que la empresa que realizó el mayor gasto en publicidad fue la que hizo los comerciales de Limon Soda, con un tiempo al aire de 128 segundos. Y la empresa que menos gasto realizó fue la del comercial de desodorante para hombre Dove, con 30 segundos al aire
+
+\begin{table}[ht!]
+\centering
+\begin{tabular}{@{}ccc@{}}
+\toprule
+Comercial               & Cantidad de comerciales & Tiempo de emisión \\ \midrule
+limon soda              & 4                       & 128               \\
+donnasept               & 4                       & 81                \\
+bilz y pap              & 2                       & 70                \\
+mr big (2)              & 2                       & 63                \\
+johnson mundial         & 3                       & 60                \\
+entel 4g corto          & 2                       & 54                \\
+scotiabank              & 2                       & 50                \\
+ripley dias r           & 2                       & 42                \\
+sodimac homecenter      & 2                       & 41                \\
+dove desodorante hombre & 2                       & 30                \\ \bottomrule
+\end{tabular}
+\captionsetup{justification=centering,margin=2cm}
+\caption{Tiempo al aire y cantidad de apariciones de cada comercial\label{tab:tiempoAlAire}}
+\end{table}
+
+La eficiencia de las distintas configuraciones se observa en la figura~\ref{fig:experimentos}, mientras que la eficacia se puede ver en el cuadro~\ref{tab:eficacia}. En este último se utiliza Valor-F.\footnote{\url{https://en.wikipedia.org/wiki/F1_score}} para medir le eficacia. Un cuadro con el detalle de los falsos positivos y falsos negativos se puede observar en el cuadro~\ref{tab:eficaciaTabla} en la sección~\ref{anexos}. Anexos
+
+Con respecto a la eficiencia en espacio usado, la configuración más simple y más liviana: frecuencia=30 $1\times1$ zonas y 16 bins, produjo un directorio de tamaño 1.8Mb; la mejor configuración produjo un directorio de 44Mb mientras que la configuración más compleja, frecuencia=10 $4\times4$ zonas y 64 bins produjo un directorio de... 353Mb !
 
 \begin{figure}[ht!]
 \centering 
@@ -274,7 +303,7 @@ La eficiencia de las distintas configuraciones se observa en la figura~\ref{fig:
 \caption{Eficiencia (en tiempo) de distintas configuraciones según frecuencia de sampleo, bins y número de zonas\label{fig:experimentos}}
 \end{figure} 
 
-\begin{table}[]
+\begin{table}[ht!]
 \centering
 \begin{tabular}{c|c|c|c|c|c|c|c|}
 \cline{2-8}
@@ -294,29 +323,19 @@ La eficiencia de las distintas configuraciones se observa en la figura~\ref{fig:
 \caption{Eficacia de las distintas configuraciones según Valor-F\label{tab:eficacia}}
 \end{table}
 
-\begin{table}[]
-\centering
-\begin{tabular}{c|
->{\columncolor[HTML]{C0C0C0}}c |c|c|c|c|c|c|}
-\cline{2-8}
-                                                                                           & \cellcolor[HTML]{9B9B9B}{\color[HTML]{000000} Frecuencia} & \multicolumn{2}{c|}{\cellcolor[HTML]{9B9B9B}{\color[HTML]{000000} 30}} & \multicolumn{2}{c|}{\cellcolor[HTML]{9B9B9B}{\color[HTML]{000000} 20}} & \multicolumn{2}{c|}{\cellcolor[HTML]{9B9B9B}{\color[HTML]{000000} 10}} \\ \hline
-\multicolumn{1}{|c|}{\cellcolor[HTML]{9B9B9B}{\color[HTML]{000000} Division}}              & Bins$\backslash$Tolerancia                                           & \cellcolor[HTML]{C0C0C0}50\%       & \cellcolor[HTML]{C0C0C0}80\%      & \cellcolor[HTML]{C0C0C0}50\%       & \cellcolor[HTML]{C0C0C0}80\%      & \cellcolor[HTML]{C0C0C0}50\%       & \cellcolor[HTML]{C0C0C0}80\%      \\ \hline
-\multicolumn{1}{|c|}{\cellcolor[HTML]{9B9B9B}{\color[HTML]{000000} }}                      & {\color[HTML]{000000} 16}                                 & 15/0/10                            & 24/0/1                            & 17/0/8                             & 25/0/0                            & 18/0/7                             & 25/0/0                            \\ \cline{2-8} 
-\multicolumn{1}{|c|}{\cellcolor[HTML]{9B9B9B}{\color[HTML]{000000} }}                      & {\color[HTML]{000000} 32}                                 & 15/0/10                            & 25/0/0                            & 16/0/9                             & 25/0/0                            & 20/0/5                             & 25/0/0                            \\ \cline{2-8} 
-\multicolumn{1}{|c|}{\multirow{-3}{*}{\cellcolor[HTML]{9B9B9B}{\color[HTML]{000000} 1x1}}} & {\color[HTML]{000000} 64}                                 & 16/0/9                             & 25/0/0                            & 20/0/5                             & 25/0/0                            & 20/0/5                             & 25/0/0                            \\ \hline
-\multicolumn{1}{|c|}{\cellcolor[HTML]{9B9B9B}{\color[HTML]{000000} }}                      & {\color[HTML]{000000} 16}                                 & 19/0/6                             & 25/0/0                            & 22/0/3                             & 25/0/0                            & 22/0/3                             & 25/0/0                            \\ \cline{2-8} 
-\multicolumn{1}{|c|}{\cellcolor[HTML]{9B9B9B}{\color[HTML]{000000} }}                      & {\color[HTML]{000000} 32}                                 & 20/0/5                             & 25/0/0                            & 19/0/6                             & 25/0/0                            & 22/0/3                             & 25/0/0                            \\ \cline{2-8} 
-\multicolumn{1}{|c|}{\multirow{-3}{*}{\cellcolor[HTML]{9B9B9B}{\color[HTML]{000000} 2x2}}} & {\color[HTML]{000000} 64}                                 & 20/0/5                             & 25/1/0                            & 21/0/4                             & 25/0/0                            & 22/0/3                             & 25/0/0                            \\ \hline
-\multicolumn{1}{|c|}{\cellcolor[HTML]{9B9B9B}{\color[HTML]{000000} }}                      & {\color[HTML]{000000} 16}                                 & 21/0/4                             & 25/2/0                            & 20/0/5                             & 25/0/0                            & 23/0/2                             & 25/0/0                            \\ \cline{2-8}
-\multicolumn{1}{|c|}{\cellcolor[HTML]{9B9B9B}{\color[HTML]{000000} }}                      & {\color[HTML]{000000} 32}                                 & 21/0/4                             & 25/2/0                            & 19/0/6                             & 25/0/0                            & 22/0/3                             & 25/0/0                            \\ \cline{2-8} 
-\multicolumn{1}{|c|}{\multirow{-3}{*}{\cellcolor[HTML]{9B9B9B}{\color[HTML]{000000} 4x4}}} & {\color[HTML]{000000} 64}                                 & 21/0/4                             & 25/3/0                            & 20/0/5                             & 25/0/0                            & 23/0/2                             & 25/0/0                            \\ \hline
-\end{tabular}
-\captionsetup{justification=centering,margin=2cm}
-\caption{Eficacia de las distintas pruebas\\ correcto/falsos positivos/falsos negativos\label{tab:eficaciaTabla}}
-\end{table}
+\newpage
 \section{Análisis y conclusiones}
+De la figura~\ref{fig:experimentos}, sobre la eficiencia, se puede notar que al usar una sola zona por frame, la diferencia introducida por el distinto número de bins utilizados no es muy notoria. Tampoco la diferencia es mucha para las distintas frecuencias de sampleo. Se pensaba que la frecuencia de muestreo de frames era lo que afectaría más la eficiencia del proceso, dado que el procesamiento de videos es lo que toma más tiempo, pero es más bien la cantidad de zonas y cantidad de bins lo que dispara los tiempos de procesamiento.\\
+
+Sobre la eficacia, como se puede ver en el cuadro~\ref{tab:eficacia}, claramente se concluye que una tolerancia *muy* estricta, como lo es un 50\%, genera resultados incorrectos. Con una tolerancia del 80\% los resultados son bastante razonables para cualquier configuración, es más, son 100\% eficaces para todas las configuraciones con frecuencia 10 y 20. Por lo mismo, con este método de detección, muestrear 1 frame de cada 10 es innecesario, independiente de los otros parámetros. Basta con muestrar 1 cada 20.\\
+
+Es curioso que en muchas configuraciones, usar 32 bins reporta más falsos negativos que usar 16 o 64. Por ahora no se tiene una explicación para ello...\\
+
+Sobre la cantidad de zonas, en general se puede decir que mientras más sean, más eficaz es el resultado de la detección. Pero para la frecuencia de muestreo de 1 frame cada 20 no se percibe una tendencia clara. Tampoco se tiene una explicación para ello por ahora.
+\newpage
+ 
 \section{Anexos}\label{anexos}
-\begin{table}[]
+\begin{table}[ht!]
 \centering
 \begin{tabular}{c|
 >{\columncolor[HTML]{C0C0C0}}c |c|c|c|c|c|c|}

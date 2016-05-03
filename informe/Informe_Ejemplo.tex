@@ -100,16 +100,18 @@
 \newpage
 \section{Introducción}
 El objetivo de esta tarea es comparar el uso de diferentes descriptores globales para resolver el problema de detección de spots publicitarios (avisos comerciales) en televisión. 
-Se dispone de un archivo de video de cuatro horas de duración con la programación emitida por un canal de televisión local, junto con un total de 10 cortos de video, cada uno de largo entre 10 y 40 segundos, correspondientes a spots publicitarios emitidos por el canal durante ese período.
+Se dispone de un archivo de video de cuatro horas de duración con la programación emitida por un canal de televisión local, junto con un total de 10 cortos de video, cada uno de largo entre 10 y 40 segundos, correspondientes a spots publicitarios emitidos por el canal durante ese período.\\
+
 Se pide implementar un detector de comerciales que señale cuántas veces fue emitido cada comercial durante las 4 horas de programación, determinando exactamente el inicio y
-fin de cada aparición. Para imlementar el detector de comerciales deberá decidir un método de 
+fin de cada aparición. Para implementar el detector de comerciales debe decidir un método de 
 descripción del contenido (extracción de características), un método de búsqueda
 por similitud (comparación de descriptores), y un método de detección (encontrar
-secuencias parecidas).  
-Llamaremos una "configuración" a la elección de extracción de característica,
-búsqueda por similitud y método de detección que permiten realizar una detección
-de comerciales. Una configuración de ejemplo podría ser: 
+secuencias parecidas).\\
+
+Finalmente se debe señalar la empresa que realizó un mayor gasto en publicidad durante esas cuatro horas de programación (asumiendo valor constante de cada segundo al aire).  
 \section{Resumen}
+Como solución se implementa un detector de comerciales basado en descriptores de histogramas por zonas y se realizan pruebas con distintas variantes del detector para determinar la configuración más efectiva y eficaz. Los experimentos se hacen probando distintas frecuencias de muestreo de frames, cantidad de zonas por frame
+  
 \section{Diseño e implementación}
 Se implementa un detector de comerciales que señala cuántas veces fue emitido cada comercial durante las 4 horas de programación, determinando exactamente el inicio y
 fin de cada aparición. Para ello se divide el trabajo en 3 pasos: 
@@ -248,6 +250,13 @@ Id comercial & frame \\ \midrule
 \end{figure} 
 
 \section{Experimentos y resultados}
+\begin{figure}[ht!]
+\centering 
+\captionsetup{justification=centering,margin=2cm}
+\includegraphics[scale=0.6]{img/experimentos.png}
+\caption{Tiempos de procesamiento para distintas configuraciones según frecuencia de sampleo, bins y número de zonas\label{fig:experimentos}}
+\end{figure} 
+
 \begin{table}[]
 \centering
 \caption{My caption}
@@ -372,15 +381,6 @@ Id comercial & frame \\ \midrule
 \end{tabular}
 \end{table}
 
-alineamiento\\
-
-máscara\\
-
-frame actual\\
-
-calce\\
-
-tamaño máscara\\
 %%==================== IMAGENES =====================
 %% ················ IMAGEN DOBLE ·················
 %\begin{figure}[ht!] \centering

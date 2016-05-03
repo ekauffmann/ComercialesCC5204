@@ -9,7 +9,7 @@ fps = 29.97002997
 
 config= "freq%szone%s,%sbins%s" % (sys.argv[1], sys.argv[2], sys.argv[3], sys.argv[4])
 
-tolerance = long(sys.argv[4])/100
+tolerance = float(sys.argv[5])/100
 
 def myHamming(a1, a2):
     dist = 0

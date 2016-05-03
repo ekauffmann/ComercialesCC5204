@@ -5,6 +5,8 @@ freq = int(sys.argv[1])
 zonas = (int(sys.argv[2]), int(sys.argv[3]))
 bins = int(sys.argv[4])
 dims = (720,400)
+fps = 29.97002997
+
 config= "freq%szone%s,%sbins%s" % (sys.argv[1], sys.argv[2], sys.argv[3], sys.argv[4])
 
 tolerance = long(sys.argv[4])/100
@@ -32,7 +34,6 @@ count= np.zeros(len(dict))
 for com in dict:
     a = [com[0]]*com[2]
     b = range(0, com[2])
-    asd = np.transpose(np.array([a,b]))
     masks += [np.transpose(np.array([a,b]))]
     times += [[]]
 
@@ -57,17 +58,17 @@ with open("pruebas/"+config+"/playlist.m3u", 'w') as pls:
             count[com_id]+=1
             times[com_id]+= [i-best_frame]
             #print "%s %s %s %d %d" % (prettyTime(i*30/29.97), dict[com_id]['name'], str(matches[i]), dist, com_fc)
-            print str((i-best_frame)*freq/29.97002997) + " "+ str((i-best_frame+com_fc)*freq/29.97002997) + " " + dict[com_id]['name']
-            pls.write("#EXTVLCOPT:start-time=%d\n" % ((i-best_frame)*freq/29.97002997))
-            pls.write("#EXTVLCOPT:stop-time=%d\n" % ((i-best_frame+com_fc-1)*freq/29.97002997))
+            print str((i-best_frame)*freq/fps) + " "+ str((i-best_frame+com_fc)*freq/fps) + " " + dict[com_id]['name']
+            pls.write("#EXTVLCOPT:start-time=%d\n" % ((i-best_frame)*freq/fps))
+            pls.write("#EXTVLCOPT:stop-time=%d\n" % ((i-best_frame+com_fc-1)*freq/fps))
             pls.write("../../base/mega-2014_04_25T22_00_07.mp4\n")
             i = i-best_frame+com_fc
 
         i+=1
 
 with open("pruebas/"+config+"/ocurrencias"+str(tolerance)+".txt", 'w') as oc:
-oc.write(str(np.sum(count).astype(int)) + " ocurrencias"+"\n")
-for i in range(len(dict)):
-    oc.write("%s %d" % (dict[i]['name'], count[i])+"\n")
-    for j in times[i]:
-        oc.write("\t" + str(j*freq/29.97002997) + "\t-> " + str(prettyTime(j*freq/29.97002997))+"\n")
+    oc.write(str(np.sum(count).astype(int)) + " ocurrencias"+"\n")
+    for i in range(len(dict)):
+        oc.write("%s %d" % (dict[i]['name'], count[i])+"\n")
+        for j in times[i]:
+            oc.write("\t" + str(j*freq/fps) + "\t-> " + str(prettyTime(j*freq/fps))+"\n")

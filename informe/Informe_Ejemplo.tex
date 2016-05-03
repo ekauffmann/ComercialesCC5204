@@ -1,7 +1,7 @@
 %%======== TEMPLATE INFORMES ESTILO FCFM ========
 % Autor: Elisa Paz Kauffmann Figueroa
-% Estudiante de la carrera de Ingeniería Civil en Ciencias de la Computación
-% de la Faculta de Ciencias Físicas y Matemáticas FCFM de la Universidad de % Chile.
+% Estudiante de Ingeniería Civil en Ciencias de la Computación
+% FCFM U. de Chile
 %%===============================================
 
 \documentclass[14pt,letterpaper,hidelinks]{extarticle}
@@ -10,7 +10,7 @@
 %\usepackage[latin1]{inputenc}
 \usepackage[spanish]{babel}
 \usepackage[letterpaper,includeheadfoot, top=1cm, bottom=3.0cm, right=2.0cm, left=2.0cm]{geometry}
-\renewcommand{\familydefault}{\sfdefault}
+\renewcommand{\familydefault}{\rmdefault}
 
 \usepackage{svg}
 
@@ -63,7 +63,7 @@
 		Alumnos: & Patricio Isbej\\
 				& Elisa Kauffmann\\
 		Profesor: & Juan Manuel Barrios\\
-		Ayudante: & Sebastián Ferrada Aliaga\\
+		Ayudante: & Sebastián Ferrada\\
 		Fecha: & 28 de abril de 2016
 	\end{tabular}
 \end{table}
@@ -99,58 +99,8 @@
 \section{Resumen}
 \section{Hipótesis}
 \section{Diseño e implementación}
-
-
-\textbf{Para ejecutar los tests de cada estructura:}
-Para ver el correcto funcionamiento de cada estructuras se implementaron pequeños tests individuales que las construyen y realizan una búsqueda a partir de un texto y una palabra proveídos directamente por el usuario.
-
-A continuación se describen los pasos a seguir para probar cada estructura.
-
-	\begin{itemize}
-		\item PatriciaTree y Autómata
-		\begin{enumerate}
-			\item Para probar el patricia tree, se debe abrir el archivo 			\verb+PatriciaTree.java+ ubicado en el paquete 									\verb+patriciatree+. Para probar el autómata se debe abrir el archivo \verb+PatternSearchAutomaton.java+ ubicado en el paquete \verb+patternsearchautomaton+.
-
-			\item Para especificar el texto sobre el cual se realizará la búsqueda, se debe ir al main al final del archivo y allí, asignar a la variable \verb+text+, entre comillas (`` ''), una frase cuyas palabras estén separadas por espacios. \textbf{NO} se deben incluir espacios ni al comienzo ni al final de la frase.
-
-			\item Para especificar la palabra que se desea buscar, en el mismo main se debe asignar a la variable \verb+word+, entre comillas (`` '') una palabra. \textbf{NO} se debe incluir espacios ni al principio ni al final.
-			\item Ejecutar.
-		\end{enumerate}
-
-		\item Suffix Tree
-			\begin{enumerate}
-				\item Abrir el archivo \verb+SuffixTree.java+ ubicado en el paquete \verb+suffixtree+.
-
-				\item Comentar la línea 20 y descomentar la línea 24.
-
-				\item Idéntico al paso 3 descrito en la subsección anterior.
-
-				\item Idéntico al paso 4 descrito en la subsección anterior.
-				
-				\item Ejecutar.
-			\end{enumerate}
-\end{itemize}
-\newpage
-
-\textbf{Para ejecutar el programa de pruebas sobre libros}
-\begin{enumerate}
-	\item Abrir el archivo \verb+SuffixTree.java+ ubicado en el paquete \verb+suffixtree+ y asegurarse de que la línea 20 esté descomentada y la línea 24 esté comentada.
-	
-	\item Abrir el archivo \verb+Main.java+ ubicado en el paquete \verb+main+.
-
-	\item En la línea 24, especificar la ruta del archivo de texto donde se guardarán los resultados.
-
-	\item En la línea 27, especificar la ruta del directorio donde se encuentra la carpeta \verb+libros+ incluído en la carpeta principal de la tarea.
-	
-	\item Ejecutar.
-
-\end{enumerate}
-
-
 \section{Experimentos y resultados}
-
-  
-\section{Análisis}
+\section{Análisis y conclusiones}
 
 
 %%==================== IMAGENES =====================

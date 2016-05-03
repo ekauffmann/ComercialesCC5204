@@ -110,8 +110,13 @@ secuencias parecidas).\\
 
 Finalmente se debe señalar la empresa que realizó un mayor gasto en publicidad durante esas cuatro horas de programación (asumiendo valor constante de cada segundo al aire).  
 \section{Resumen}
-Como solución se implementa un detector de comerciales basado en descriptores de histogramas por zonas y se realizan pruebas con distintas variantes del detector para determinar la configuración más efectiva y eficaz. Los experimentos se hacen probando distintas frecuencias de muestreo de frames, cantidad de zonas por frame
-  
+Como solución se implementa en \verb+Python+ un detector de comerciales basado en descriptores de histogramas por zonas, y se realizan pruebas con distintas variantes del detector para determinar la configuración más efectiva y eficaz.\\
+
+Los experimentos se hacen probando distintas frecuencias de muestreo de frames, cantidad de zonas por frame
+y número de bins de los histogramas. También se experimentó con distintos niveles de tolerancia durante la detección de secuencias parecidas.\\
+
+Se concluye que el método usado reporta resultados de manera más eficaz usando una tolerancia más bien holgada en vez de estricta, independiente de la configuración. Usando una tolerancia del 80\%, de las configuraciones 100\% eficaces, la más eficiente en tiempo es aquella que usa una frecuencia de muestreo de 1 cada 20 frames, 1 zona e histogramas de 16 bins.
+
 \section{Diseño e implementación}
 Se implementa un detector de comerciales que señala cuántas veces fue emitido cada comercial durante las 4 horas de programación, determinando exactamente el inicio y
 fin de cada aparición. Para ello se divide el trabajo en 3 pasos: 
@@ -221,7 +226,7 @@ Detalladamente, la implementación lleva a cabo los siguientes pasos:
 \centering
 \begin{tabular}{@{}cc@{}}
 \toprule
-Id comercial & frame \\ \midrule
+id comercial & frame \\ \midrule
 2 & 0 \\
 2 & 1 \\
 2 & 2 \\
@@ -250,17 +255,27 @@ Id comercial & frame \\ \midrule
 \end{figure} 
 
 \section{Experimentos y resultados}
+Se realizan tests ejecutando \verb+describe.py+, \verb+compare.py+ y \verb+match.py+ sucesivamente usando todas las combinaciones de los siguientes parámetros:
+\begin{itemize}
+\item Frecuencia de muestreo de frames: cada 30, 20 y 10 frames
+\item División por zonas: 1x1, 2x2 y 4x4
+\item Cantidad de bins: 16, 32 y 64
+\item Tolerancia: 80\% y 50\%
+\end{itemize}
+
+Para facilitar la ejecución, se crea el script \verb+run_descriptors.sh+ que para cada combinación ejecuta los 3 archivos y guarda los resultados y metadata de manera ordenada en distintos directorios.\\
+
+La eficiencia de las distintas configuraciones se observa en la figura~\ref{fig:experimentos}, mientras que la eficacia se puede ver en el cuadro~\ref{tab:eficacia}. Un cuadro con el detalle de los falsos positivos y falsos negativos se puede observar en el cuadro~\ref{tab:eficaciaTabla} en la sección~\ref{anexos}. Anexos
+
 \begin{figure}[ht!]
 \centering 
 \captionsetup{justification=centering,margin=2cm}
 \includegraphics[scale=0.6]{img/experimentos.png}
-\caption{Tiempos de procesamiento para distintas configuraciones según frecuencia de sampleo, bins y número de zonas\label{fig:experimentos}}
+\caption{Eficiencia (en tiempo) de distintas configuraciones según frecuencia de sampleo, bins y número de zonas\label{fig:experimentos}}
 \end{figure} 
 
 \begin{table}[]
 \centering
-\caption{My caption}
-\label{my-label}
 \begin{tabular}{c|c|c|c|c|c|c|c|}
 \cline{2-8}
  & Frecuencia & \multicolumn{2}{c|}{30} & \multicolumn{2}{c|}{20} & \multicolumn{2}{c|}{10} \\ \hline
@@ -275,12 +290,12 @@ Id comercial & frame \\ \midrule
 \multicolumn{1}{|c|}{} & 32 & 0.91 & 0.96 & 0.86 & 1 & 0.94 & 1 \\ \cline{2-8} 
 \multicolumn{1}{|c|}{} & 64 & 0.91 & 0.94 & 0.89 & 1 & 0.96 & 1 \\ \hline
 \end{tabular}
+\captionsetup{justification=centering,margin=2cm}
+\caption{Eficacia de las distintas configuraciones según Valor-F\label{tab:eficacia}}
 \end{table}
 
 \begin{table}[]
 \centering
-\caption{My caption}
-\label{my-label}
 \begin{tabular}{c|
 >{\columncolor[HTML]{C0C0C0}}c |c|c|c|c|c|c|}
 \cline{2-8}
@@ -296,90 +311,32 @@ Id comercial & frame \\ \midrule
 \multicolumn{1}{|c|}{\cellcolor[HTML]{9B9B9B}{\color[HTML]{000000} }}                      & {\color[HTML]{000000} 32}                                 & 21/0/4                             & 25/2/0                            & 19/0/6                             & 25/0/0                            & 22/0/3                             & 25/0/0                            \\ \cline{2-8} 
 \multicolumn{1}{|c|}{\multirow{-3}{*}{\cellcolor[HTML]{9B9B9B}{\color[HTML]{000000} 4x4}}} & {\color[HTML]{000000} 64}                                 & 21/0/4                             & 25/3/0                            & 20/0/5                             & 25/0/0                            & 23/0/2                             & 25/0/0                            \\ \hline
 \end{tabular}
+\captionsetup{justification=centering,margin=2cm}
+\caption{Eficacia de las distintas pruebas\\ correcto/falsos positivos/falsos negativos\label{tab:eficaciaTabla}}
 \end{table}
 \section{Análisis y conclusiones}
-\section{Anexos}
+\section{Anexos}\label{anexos}
 \begin{table}[]
 \centering
-\caption{My caption}
-\label{my-label}
-\begin{tabular}{|cc|l|l|l|l|l|l|}
-\hline
-\multicolumn{1}{|l}{} & \multicolumn{1}{r|}{Frecuencia} & \multicolumn{2}{c|}{30}                               & \multicolumn{2}{c|}{20}                               & \multicolumn{2}{c|}{10}                               \\ \cline{3-8} 
-\multicolumn{1}{|l}{Division} & \multicolumn{1}{l|}{Bins$\backslash$Tolerancia} & \multicolumn{1}{c|}{50\%} & \multicolumn{1}{c|}{80\%} & \multicolumn{1}{c|}{50\%} & \multicolumn{1}{c|}{80\%} & \multicolumn{1}{c|}{50\%} & \multicolumn{1}{c|}{80\%} \\ \hline
-\multicolumn{1}{|c|}{\multirow{3}{*}{1x1}} & 16                                   & 15/0/10                   & 24/0/1                    & 17/0/8                    & 25/0/0                    & 18/0/7                    & 25/0/0                    \\ \cline{2-8} 
-\multicolumn{1}{|c|}{}                     & 32                                   & 15/0/10                   & 25/0/0                    & 16/0/9                    & 25/0/0                    & 20/0/5                    & 25/0/0                    \\ \cline{2-8} 
-\multicolumn{1}{|c|}{}                     & 64                                   & 16/0/9                    & 25/0/0                    & 20/0/5                    & 25/0/0                    & 20/0/5                    & 25/0/0                    \\ \hline
-\multicolumn{1}{|c|}{\multirow{3}{*}{2x2}} & 16                                   & 19/0/6                    & 25/0/0                    & 22/0/3                    & 25/0/0                    & 22/0/3                    & 25/0/0                    \\ \cline{2-8} 
-\multicolumn{1}{|c|}{}                     & 32                                   & 20/0/5                    & 25/0/0                    & 19/0/6                    & 25/0/0                    & 22/0/3                    & 25/0/0                    \\ \cline{2-8} 
-\multicolumn{1}{|c|}{}                     & 64                                   & 20/0/5                    & 25/1/0                    & 21/0/4                    & 25/0/0                    & 22/0/3                    & 25/0/0                    \\ \hline
-\multicolumn{1}{|c|}{\multirow{3}{*}{4x4}} & 16                                   & 21/0/4                    & 25/2/0                    & 20/0/5                    & 25/0/0                    & 23/0/2                    & 25/0/0                    \\ \cline{2-8} 
-\multicolumn{1}{|c|}{}                     & 32                                   & 21/0/4                    & 25/2/0                    & 19/0/6                    & 25/0/0                    & 22/0/3                    & 25/0/0                    \\ \cline{2-8} 
-\multicolumn{1}{|c|}{}                     & 64                                   & 21/0/4                    & 25/3/0                    & 20/0/5                    & 25/0/0                    & 23/0/2                    & 25/0/0                    \\ \hline
+\begin{tabular}{c|
+>{\columncolor[HTML]{C0C0C0}}c |c|c|c|c|c|c|}
+\cline{2-8}
+                                                                                           & \cellcolor[HTML]{9B9B9B}{\color[HTML]{000000} Frecuencia} & \multicolumn{2}{c|}{\cellcolor[HTML]{9B9B9B}{\color[HTML]{000000} 30}} & \multicolumn{2}{c|}{\cellcolor[HTML]{9B9B9B}{\color[HTML]{000000} 20}} & \multicolumn{2}{c|}{\cellcolor[HTML]{9B9B9B}{\color[HTML]{000000} 10}} \\ \hline
+\multicolumn{1}{|c|}{\cellcolor[HTML]{9B9B9B}{\color[HTML]{000000} Division}}              & Bins$\backslash$Tolerancia                                           & \cellcolor[HTML]{C0C0C0}50\%       & \cellcolor[HTML]{C0C0C0}80\%      & \cellcolor[HTML]{C0C0C0}50\%       & \cellcolor[HTML]{C0C0C0}80\%      & \cellcolor[HTML]{C0C0C0}50\%       & \cellcolor[HTML]{C0C0C0}80\%      \\ \hline
+\multicolumn{1}{|c|}{\cellcolor[HTML]{9B9B9B}{\color[HTML]{000000} }}                      & {\color[HTML]{000000} 16}                                 & 15/0/10                            & 24/0/1                            & 17/0/8                             & 25/0/0                            & 18/0/7                             & 25/0/0                            \\ \cline{2-8} 
+\multicolumn{1}{|c|}{\cellcolor[HTML]{9B9B9B}{\color[HTML]{000000} }}                      & {\color[HTML]{000000} 32}                                 & 15/0/10                            & 25/0/0                            & 16/0/9                             & 25/0/0                            & 20/0/5                             & 25/0/0                            \\ \cline{2-8} 
+\multicolumn{1}{|c|}{\multirow{-3}{*}{\cellcolor[HTML]{9B9B9B}{\color[HTML]{000000} 1x1}}} & {\color[HTML]{000000} 64}                                 & 16/0/9                             & 25/0/0                            & 20/0/5                             & 25/0/0                            & 20/0/5                             & 25/0/0                            \\ \hline
+\multicolumn{1}{|c|}{\cellcolor[HTML]{9B9B9B}{\color[HTML]{000000} }}                      & {\color[HTML]{000000} 16}                                 & 19/0/6                             & 25/0/0                            & 22/0/3                             & 25/0/0                            & 22/0/3                             & 25/0/0                            \\ \cline{2-8} 
+\multicolumn{1}{|c|}{\cellcolor[HTML]{9B9B9B}{\color[HTML]{000000} }}                      & {\color[HTML]{000000} 32}                                 & 20/0/5                             & 25/0/0                            & 19/0/6                             & 25/0/0                            & 22/0/3                             & 25/0/0                            \\ \cline{2-8} 
+\multicolumn{1}{|c|}{\multirow{-3}{*}{\cellcolor[HTML]{9B9B9B}{\color[HTML]{000000} 2x2}}} & {\color[HTML]{000000} 64}                                 & 20/0/5                             & 25/1/0                            & 21/0/4                             & 25/0/0                            & 22/0/3                             & 25/0/0                            \\ \hline
+\multicolumn{1}{|c|}{\cellcolor[HTML]{9B9B9B}{\color[HTML]{000000} }}                      & {\color[HTML]{000000} 16}                                 & 21/0/4                             & 25/2/0                            & 20/0/5                             & 25/0/0                            & 23/0/2                             & 25/0/0                            \\ \cline{2-8}
+\multicolumn{1}{|c|}{\cellcolor[HTML]{9B9B9B}{\color[HTML]{000000} }}                      & {\color[HTML]{000000} 32}                                 & 21/0/4                             & 25/2/0                            & 19/0/6                             & 25/0/0                            & 22/0/3                             & 25/0/0                            \\ \cline{2-8} 
+\multicolumn{1}{|c|}{\multirow{-3}{*}{\cellcolor[HTML]{9B9B9B}{\color[HTML]{000000} 4x4}}} & {\color[HTML]{000000} 64}                                 & 21/0/4                             & 25/3/0                            & 20/0/5                             & 25/0/0                            & 23/0/2                             & 25/0/0                            \\ \hline
 \end{tabular}
+\captionsetup{justification=centering,margin=2cm}
+\caption{Eficacia de las distintas pruebas\\ correcto/falsos positivos/falsos negativos\label{tab:eficaciaTabla}}
 \end{table}
 
-\begin{table}[]
-\centering
-\caption{My caption}
-\label{my-label}
-\begin{tabular}{ll}
-2 & 0  \\
-2 & 1  \\
-2 & 2  \\
-2 & 3  \\
-2 & 4  \\
-2 & 5  \\
-2 & 6  \\
-2 & 7  \\
-2 & 8  \\
-2 & 9  \\
-2 & 10 \\
-2 & 11 \\
-2 & 12 \\
-2 & 13 \\
-2 & 14
-\end{tabular}
-\end{table}
-\begin{table}[]
-\centering
-\caption{My caption}
-\label{my-label}
-\begin{tabular}{ll}
-8 & 9  \\
-4 & 16 \\
-5 & 29 \\
-5 & 29 \\
-5 & 29 \\
-4 & 16 \\
-4 & 16 \\
-2 & 1  \\
-2 & 5  \\
-2 & 3  \\
-2 & 3  \\
-2 & 5  \\
-2 & 5  \\
-2 & 7  \\
-2 & 7  \\
-2 & 8  \\
-2 & 9  \\
-2 & 11 \\
-2 & 11 \\
-2 & 12 \\
-2 & 14 \\
-2 & 14 \\
-4 & 6  \\
-4 & 6  \\
-4 & 6  \\
-4 & 6  \\
-6 & 23 \\
-4 & 15 \\
-4 & 7  \\
-5 & 25 \\
-2 & 0  \\
-4 & 3 
-\end{tabular}
-\end{table}
 
 %%==================== IMAGENES =====================
 %% ················ IMAGEN DOBLE ·················

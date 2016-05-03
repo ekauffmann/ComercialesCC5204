@@ -193,11 +193,42 @@ com\_id & nombre archivo & descriptor comercial \\ \midrule
 El código se encuentra en el archivo \verb+compare.py+
 
 \subsection{Detección}
-En esta etapa se detecta la aparición de los comerciales en el video de 4 horas haciendo uso del diccionario y el vector de ``calces'' creados en las etapas anteriores. La idea general es usar máscaras, una por cada comercial, para ir recorriendo el vector de ``calces'' y comparar segmentos de éste con las máscaras usando distancia de Hamming. La idea se ilustra en la figura~\ref{my-label}.
+En esta etapa se detecta la aparición de los comerciales en el video de 4 horas haciendo uso del diccionario y el vector de ``calces'' creados en las etapas anteriores. La idea general es usar máscaras, una por cada comercial, para ir recorriendo el vector de ``calces'' y comparar la similitud entre segmentos de éste con las máscaras usando distancia de Hamming. La idea se ilustra en la figura~\ref{my-label}.
+
+La distancia de Hamming es calculada usando una función específica, implementada para este caso en particular.\\
 
 Detalladamente, la implementación lleva a cabo los siguientes pasos:
-\
- 
+\begin{enumerate}
+\item Se cargan el diccionario y el vector de ``calces'' en memoria a partir de los archivos generados en la etapa anterior.
+\item Para cada comercial en el diccionario se crea una máscara: una matriz con tantas filas como la cantidad de frames del comercial y 2 columnas. En la primera columna se repite para todas las filas el identificador del comercial y en la segunda columna se enumeran todos sus frames. Un ejemplo de máscara se puede ver en la figura~\ref{tab:mask}.
+\item Para cada línea del vector de ``calces'' se alínea la máscara del comercial indicado en la posición del frame indicado. Se calcula la similitud entre la máscara y la sección del vector de calces usando distancia de Hamming
+\end{enumerate}
+
+\begin{table}[]
+\centering
+\begin{tabular}{@{}cc@{}}
+\toprule
+Id comercial & frame \\ \midrule
+2 & 0 \\
+2 & 1 \\
+2 & 2 \\
+2 & 3 \\
+2 & 4 \\
+2 & 5 \\
+2 & 6 \\
+2 & 7 \\
+2 & 8 \\
+2 & 9 \\
+2 & 10 \\
+2 & 11 \\
+2 & 12 \\
+2 & 13 \\
+2 & 14 \\ \bottomrule
+\end{tabular}
+\captionsetup{justification=centering,margin=2cm}
+\caption{Bosquejo de la máscara de un comercial creada para la configuración de 1 descriptor cada 30 frames\label{tab:mask}}
+\end{table}
+
 \section{Experimentos y resultados}
 \begin{table}[]
 \centering
@@ -323,6 +354,15 @@ Detalladamente, la implementación lleva a cabo los siguientes pasos:
 \end{tabular}
 \end{table}
 
+alineamiento\\
+
+máscara\\
+
+frame actual\\
+
+calce\\
+
+tamaño máscara\\
 %%==================== IMAGENES =====================
 %% ················ IMAGEN DOBLE ·················
 %\begin{figure}[ht!] \centering

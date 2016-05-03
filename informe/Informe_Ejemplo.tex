@@ -103,20 +103,22 @@
 \section{Hipótesis}
 \section{Diseño e implementación}
 Se implementa un detector de comerciales que señala cuántas veces fue emitido cada comercial durante las 4 horas de programación, determinando exactamente el inicio y
-fin de cada aparición. El reporte de detecciones se guarda en un archivo \verb+.m3u+ que por cada aparición de un comercial, contiene 3 líneas con el siguiente formato: 
+fin de cada aparición. Para ello se divide el trabajo en 3 pasos: 
+\begin{enumerate}
+\item Descripción del contenido (extracción de características)
+\item Búsqueda por similitud (comparación de descriptores)
+\item Detección (encontrar secuencias parecidas)
+\end{enumerate}
+
+Se usa el lenguaje \verb+Python+ utilizando las librerías \verb+OpenCV+ para procesar imágenes y videos, \verb+numpy+ para manejo de vectores y matrices y \verb+matplotlib+ para graficar.\\
+
+El reporte de detecciones se guarda en un archivo \verb+.m3u+ que por cada aparición de un comercial, contiene 3 líneas con el siguiente formato: 
 \begin{verbatim}
 #EXTVLCOPT:start-time= [seconds]
 #EXTVLCOPT:stop-time= [seconds]
 ../../base/mega-2014_04_25T22_00_07.mp4
 \end{verbatim}
 donde la primera y la segunda línea indican el momento en que empieza y termina el comercial respectivamente (en segundos), y la tercera línea indica el video a reproducir, en este caso es el programa de 4 horas.\\
-
-Para implementar el detector de comerciales se divide el trabajo en 3 pasos: 
-\begin{enumerate}
-\item Descripción del contenido (extracción de características)
-\item Búsqueda por similitud (comparación de descriptores)
-\item Detección (encontrar secuencias parecidas)
-\end{enumerate}
 
 \subsection{Descripción del contenido}
 A rasgos generales, en esta etapa se utiliza el descriptor de \textbf{histogramas por zonas} para caracterizar los frames de los videos guardando el descriptor de cada video en un archivo \verb+.npy+, el cual será utilizado en el paso siguiente. Es importante mencionar que los frames de todos los videos son escalados al mismo tamaño ($720\times400$ px) para normalizar y facilitar la división en zonas. Además, previo al desarrollo de la tarea se verificó que todos los videos tuvieran el mismo \textit{framerate} para mantener consistencia ($\sim$ 29.97 fps).\\
@@ -139,7 +141,7 @@ En detalle, el programa ejecuta los siguientes pasos:
 El código se encuentra en el archivo \verb+describe.py+
 
 \subsection{Búsqueda por similitud}
-Durante esta etapa, por cada frame del video de 4 horas se encuentra el frame del comercial que más se le parece. Para ello se comparan todos los vectores descriptores de cada comercial contra cada frame del video de 4 horas, utilizando distancia Manhattan. Para facilitar el procesamiento se crea un diccionario que guarda, por cada comercial, su título, un número identificador y la cantidad de frames procesados. Un ejemplo de uno de los diccionarios creados se puede observar en el cuadro~\ref{tab:dict}.\\
+Durante esta etapa, usando los descriptores creados anteriormente, por cada frame del video de 4 horas se encuentra el frame del comercial que más se le parece. Para ello se comparan todos los vectores descriptores de cada comercial contra cada frame del video de 4 horas, utilizando distancia Manhattan. Para facilitar el procesamiento se crea un diccionario que guarda, por cada comercial, su título, un número identificador y la cantidad de frames procesados. Un ejemplo de uno de los diccionarios creados se puede observar en el cuadro~\ref{tab:dict}.\\
 
 \begin{table}[]
 \centering
@@ -158,22 +160,65 @@ Id & Nombre                      & Frames \\ \midrule
 9  & bilz y pap.npy              & 105    \\ \bottomrule
 \end{tabular}
 \captionsetup{justification=centering,margin=2cm}
-\caption{Diccionario creado para la configuración de 1 descriptor cada 10 frames. \label{tab:dict}}
+\caption{Bosquejo del diccionario creado para la configuración de 1 descriptor cada 10 frames. \label{tab:dict}}
 \end{table}
 
 Específicamente, el programa realiza los siguientes pasos:
 \begin{enumerate}
 \item Se crea un diccionario que mapea los títulos de los comerciales a un identificador y a la cantidad de frames obtenidos en la etapa anterior.
-\item Se cargan en memoria los descriptores de video de todos los 10 comerciales y usando el diccionario se construye una matriz de dimensiones $10\times 3$. La matriz contiene, para cada comercial, una fila con su identificador, su título y su descriptor.
+\item Se cargan en memoria los descriptores de video de todos los 10 comerciales y usando el diccionario se construye una matriz de dimensiones $10\times 3$. La matriz contiene, para cada comercial, una fila con su identificador, su título y su descriptor. (Ver cuadro~\ref{tab:descsCom}). 
 \item Se carga el descriptor del programa de 4 horas y se compara cada frame contra todos los frames de los 10 comerciales. Para medir la similitud entre vectores descriptores se utiliza distancia Manhattan (utilizando la función \verb+norm+ de \verb+OpenCV+ con el parámetro \verb+NORM_L1+). Así se va construyendo un vector de ``calces'' con tantas filas como frames del programa de 4 horas procesados. Cada fila contiene el índice del frame y el identificador del comercial que más se parece al frame del programa.
-\item El vector de ``calces'' se guarda en un archivo \verb+.npy+   
+\item El vector de ``calces'' se guarda en un archivo \verb+.npy+ para ser usado en el paso siguiente   
 \end{enumerate} 
+\begin{table}[]
+\centering
+\begin{tabular}{@{}ccc@{}}
+\toprule
+com\_id & nombre archivo & descriptor comercial \\ \midrule
+0 & mr big (2).npy & {[}{[}{]},{[}{]},...,{[}{]},{[}{]}{]} \\
+1 & scotiabank.npy & {[}{[}{]},{[}{]},...,{[}{]},{[}{]}{]} \\
+2 & ripley dias r.npy & {[}{[}{]},{[}{]},...,{[}{]},{[}{]}{]} \\
+3 & sodimac homecenter.npy & {[}{[}{]},{[}{]},...,{[}{]},{[}{]}{]} \\
+4 & donnasept.npy & {[}{[}{]},{[}{]},...,{[}{]},{[}{]}{]} \\
+5 & dove desodorante hombre.npy & {[}{[}{]},{[}{]},...,{[}{]},{[}{]}{]} \\
+6 & entel 4g corto.npy & {[}{[}{]},{[}{]},...,{[}{]},{[}{]}{]} \\
+7 & johnson mundial.npy & {[}{[}{]},{[}{]},...,{[}{]},{[}{]}{]} \\
+8 & limon soda.npy & {[}{[}{]},{[}{]},...,{[}{]},{[}{]}{]} \\
+9 & bilz y pap.npy & {[}{[}{]},{[}{]},...,{[}{]},{[}{]}{]} \\ \bottomrule
+\end{tabular}
+\captionsetup{justification=centering,margin=2cm}
+\caption{Bosquejo de la matriz de identificadores y descriptores de los comerciales \label{tab:descsCom}}
+\end{table}
 
+El código se encuentra en el archivo \verb+compare.py+
 
 \subsection{Detección}
+En esta etapa se detecta la aparición de los comerciales en el video de 4 horas haciendo uso del diccionario y el vector de ``calces'' creados en las etapas anteriores. La idea general es usar máscaras, una por cada comercial, para ir recorriendo el vector de ``calces'' y comparar segmentos de éste con las máscaras usando distancia de Hamming. La idea se ilustra en la figura~\ref{my-label}.
 
+Detalladamente, la implementación lleva a cabo los siguientes pasos:
+\
  
 \section{Experimentos y resultados}
+\begin{table}[]
+\centering
+\caption{My caption}
+\label{my-label}
+\begin{tabular}{c|c|c|c|c|c|c|c|}
+\cline{2-8}
+ & Frecuencia & \multicolumn{2}{c|}{30} & \multicolumn{2}{c|}{20} & \multicolumn{2}{c|}{10} \\ \hline
+\multicolumn{1}{|c|}{Division} & Bins$\backslash$Tolerancia & 50\% & 80\% & 50\% & 80\% & 50\% & 80\% \\ \hline
+\multicolumn{1}{|c|}{\multirow{3}{*}{1x1}} & 16 & 0.75 & 0.98 & 0.81 & 1 & 0.84 & 1 \\ \cline{2-8} 
+\multicolumn{1}{|c|}{} & 32 & 0.75 & 1 & 0.78 & 1 & 0.89 & 1 \\ \cline{2-8} 
+\multicolumn{1}{|c|}{} & 64 & 0.78 & 1 & 0.81 & 1 & 0.89 & 1 \\ \hline
+\multicolumn{1}{|c|}{\multirow{3}{*}{2x2}} & 16 & 0.86 & 1 & 0.94 & 1 & 0.94 & 1 \\ \cline{2-8} 
+\multicolumn{1}{|c|}{} & 32 & 0.89 & 1 & 0.86 & 1 & 0.94 & 1 \\ \cline{2-8} 
+\multicolumn{1}{|c|}{} & 64 & 0.89 & 0.98 & 0.91 & 1 & 0.94 & 1 \\ \hline
+\multicolumn{1}{|c|}{\multirow{3}{*}{4x4}} & 16 & 0.91 & 0.96 & 0.89 & 1 & 0.96 & 1 \\ \cline{2-8} 
+\multicolumn{1}{|c|}{} & 32 & 0.91 & 0.96 & 0.86 & 1 & 0.94 & 1 \\ \cline{2-8} 
+\multicolumn{1}{|c|}{} & 64 & 0.91 & 0.94 & 0.89 & 1 & 0.96 & 1 \\ \hline
+\end{tabular}
+\end{table}
+
 \begin{table}[]
 \centering
 \caption{My caption}
@@ -216,6 +261,67 @@ Específicamente, el programa realiza los siguientes pasos:
 \end{tabular}
 \end{table}
 
+\begin{table}[]
+\centering
+\caption{My caption}
+\label{my-label}
+\begin{tabular}{ll}
+2 & 0  \\
+2 & 1  \\
+2 & 2  \\
+2 & 3  \\
+2 & 4  \\
+2 & 5  \\
+2 & 6  \\
+2 & 7  \\
+2 & 8  \\
+2 & 9  \\
+2 & 10 \\
+2 & 11 \\
+2 & 12 \\
+2 & 13 \\
+2 & 14
+\end{tabular}
+\end{table}
+\begin{table}[]
+\centering
+\caption{My caption}
+\label{my-label}
+\begin{tabular}{ll}
+8 & 9  \\
+4 & 16 \\
+5 & 29 \\
+5 & 29 \\
+5 & 29 \\
+4 & 16 \\
+4 & 16 \\
+2 & 1  \\
+2 & 5  \\
+2 & 3  \\
+2 & 3  \\
+2 & 5  \\
+2 & 5  \\
+2 & 7  \\
+2 & 7  \\
+2 & 8  \\
+2 & 9  \\
+2 & 11 \\
+2 & 11 \\
+2 & 12 \\
+2 & 14 \\
+2 & 14 \\
+4 & 6  \\
+4 & 6  \\
+4 & 6  \\
+4 & 6  \\
+6 & 23 \\
+4 & 15 \\
+4 & 7  \\
+5 & 25 \\
+2 & 0  \\
+4 & 3 
+\end{tabular}
+\end{table}
 
 %%==================== IMAGENES =====================
 %% ················ IMAGEN DOBLE ·················

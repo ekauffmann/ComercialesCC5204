@@ -25,6 +25,7 @@
 \usepackage{subfig}
 \usepackage{indentfirst}
 \usepackage{titlesec}
+
 \titleformat*{\section}{\large\bfseries}
 \titleformat*{\subsection}{\normalsize\bfseries}
 
@@ -64,7 +65,7 @@
 				& Elisa Kauffmann\\
 		Profesor: & Juan Manuel Barrios\\
 		Ayudante: & Sebastián Ferrada\\
-		Fecha: & 28 de abril de 2016
+		Fecha: & 2 de mayo de 2016
 	\end{tabular}
 \end{table}
 \end{flushright}
@@ -96,9 +97,46 @@
 
 % =============== SECCIONES Y SUBSECCIONES ===============
 \newpage
+\section{Introducción}
 \section{Resumen}
 \section{Hipótesis}
 \section{Diseño e implementación}
+Se implementa un detector de comerciales que señala cuántas veces fue emitido cada comercial durante las 4 horas de programación, determinando exactamente el inicio y
+fin de cada aparición. El reporte de detecciones se guarda en un archivo \verb+.m3u+ que por cada aparición de un comercial, contiene 3 líneas con el siguiente formato: 
+\begin{verbatim}
+#EXTVLCOPT:start-time= [seconds]
+#EXTVLCOPT:stop-time= [seconds]
+../../base/mega-2014_04_25T22_00_07.mp4
+\end{verbatim}
+donde la primera y la segunda línea indican el momento en que empieza y termina el comercial respectivamente (en segundos), y la tercera línea indica el video a reproducir, en este caso es el programa de 4 horas.\\
+
+Para implementar el detector de comerciales se divide el trabajo en 3 pasos: 
+\begin{enumerate}
+\item Descripción del contenido (extracción de características)
+\item Búsqueda por similitud (comparación de descriptores)
+\item Detección (encontrar secuencias parecidas)
+\end{enumerate}
+
+\subsection{Descripción del contenido}
+A rasgos generales, en esta etapa se utiliza el descriptor de \textbf{histogramas por zonas} para caracterizar los frames de los videos guardando el descriptor de cada video en un archivo \verb+.npy+, el cual será utilizado en el paso siguiente. Es importante mencionar que los frames de todos los videos son escalados al mismo tamaño ($720\times400$ px) para normalizar y facilitar la división en zonas. Además, previo al desarrollo de la tarea se verificó que todos los videos tuvieran el mismo \textit{framerate} para mantener consistencia ($\sim$ 29.97 fps).\\
+
+En esta etapa, los parámetros que varían en cada configuración son:
+\begin{itemize}
+\item[-] frecuencia de muestreo de frames
+\item[-] cantidad de zonas en las que se divide cada frame
+\item[-] cantidad de bins de los histogramas 
+\end{itemize}
+
+En detalle, el programa ejecuta los siguientes pasos:
+\begin{enumerate}
+\item Para cada archivo de video, se toma un frame cada cierta frecuencia, lo escala a un tamaño de $720\times400$ px y lo transforma a escala de grises.
+\item Se divide cada uno de estos frames en la cantidad de zonas especificada por el tipo de configuración, y usando la función \verb+calcHist+ de \verb+OpenCV+ se obtiene un histograma por cada zona en forma de un arreglo \verb+numpy+.
+\item Se crea el descriptor completo del frame: un arreglo \verb+numpy+ que es la concatenación de los vectores de los histogramas obtenidos en el paso anterior.
+\item Se crea el descriptor del video completo construyendo un arreglo \verb+numpy+ de todos los arreglos que describen cada frame del video.
+\end{enumerate}
+\subsection{Búsqueda por similitud}
+\subsection{Detección}
+ 
 \section{Experimentos y resultados}
 \section{Análisis y conclusiones}
 

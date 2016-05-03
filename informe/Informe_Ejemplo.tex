@@ -99,8 +99,17 @@
 % =============== SECCIONES Y SUBSECCIONES ===============
 \newpage
 \section{Introducción}
+El objetivo de esta tarea es comparar el uso de diferentes descriptores globales para resolver el problema de detección de spots publicitarios (avisos comerciales) en televisión. 
+Se dispone de un archivo de video de cuatro horas de duración con la programación emitida por un canal de televisión local, junto con un total de 10 cortos de video, cada uno de largo entre 10 y 40 segundos, correspondientes a spots publicitarios emitidos por el canal durante ese período.
+Se pide implementar un detector de comerciales que señale cuántas veces fue emitido cada comercial durante las 4 horas de programación, determinando exactamente el inicio y
+fin de cada aparición. Para imlementar el detector de comerciales deberá decidir un método de 
+descripción del contenido (extracción de características), un método de búsqueda
+por similitud (comparación de descriptores), y un método de detección (encontrar
+secuencias parecidas).  
+Llamaremos una "configuración" a la elección de extracción de característica,
+búsqueda por similitud y método de detección que permiten realizar una detección
+de comerciales. Una configuración de ejemplo podría ser: 
 \section{Resumen}
-\section{Hipótesis}
 \section{Diseño e implementación}
 Se implementa un detector de comerciales que señala cuántas veces fue emitido cada comercial durante las 4 horas de programación, determinando exactamente el inicio y
 fin de cada aparición. Para ello se divide el trabajo en 3 pasos: 
@@ -141,7 +150,7 @@ En detalle, el programa ejecuta los siguientes pasos:
 El código se encuentra en el archivo \verb+describe.py+
 
 \subsection{Búsqueda por similitud}
-Durante esta etapa, usando los descriptores creados anteriormente, por cada frame del video de 4 horas se encuentra el frame del comercial que más se le parece. Para ello se comparan todos los vectores descriptores de cada comercial contra cada frame del video de 4 horas, utilizando distancia Manhattan. Para facilitar el procesamiento se crea un diccionario que guarda, por cada comercial, su título, un número identificador y la cantidad de frames procesados. Un ejemplo de uno de los diccionarios creados se puede observar en el cuadro~\ref{tab:dict}.\\
+Durante esta etapa, usando los descriptores creados anteriormente, por cada frame del video de 4 horas se encuentra el frame del comercial que más se le parece. Para ello se comparan todos los vectores descriptores de cada comercial contra cada frame del video de 4 horas, utilizando distancia Manhattan. Para facilitar el procesamiento se crea un diccionario que guarda, por cada comercial, su título, un número identificador y la cantidad de frames procesados. Un ejemplo de uno de los diccionarios creados se pueden observar en el cuadro~\ref{tab:dict}.\\
 
 \begin{table}[]
 \centering
@@ -195,13 +204,15 @@ El código se encuentra en el archivo \verb+compare.py+
 \subsection{Detección}
 En esta etapa se detecta la aparición de los comerciales en el video de 4 horas haciendo uso del diccionario y el vector de ``calces'' creados en las etapas anteriores. La idea general es usar máscaras, una por cada comercial, para ir recorriendo el vector de ``calces'' y comparar la similitud entre segmentos de éste con las máscaras usando distancia de Hamming. La idea se ilustra en la figura~\ref{my-label}.
 
-La distancia de Hamming es calculada usando una función específica, implementada para este caso en particular.\\
+La distancia de Hamming es calculada usando una función específica implementada para este caso en particular.\\
 
 Detalladamente, la implementación lleva a cabo los siguientes pasos:
 \begin{enumerate}
 \item Se cargan el diccionario y el vector de ``calces'' en memoria a partir de los archivos generados en la etapa anterior.
 \item Para cada comercial en el diccionario se crea una máscara: una matriz con tantas filas como la cantidad de frames del comercial y 2 columnas. En la primera columna se repite para todas las filas el identificador del comercial y en la segunda columna se enumeran todos sus frames. Un ejemplo de máscara se puede ver en la figura~\ref{tab:mask}.
-\item Para cada línea del vector de ``calces'' se alínea la máscara del comercial indicado en la posición del frame indicado. Se calcula la similitud entre la máscara y la sección del vector de calces usando distancia de Hamming
+\item Para cada línea del vector de ``calces'' se alínea la máscara del comercial indicado en la posición del frame indicado. Se calcula la similitud entre la máscara y la sección del vector de ``calces'' usando distancia de Hamming. Este proceso se ilustra en la figura~\ref{fig:match}
+\item Se reporta una aparición de un comercial cuando la similitud calculada en el paso anterior está dentro de cierto rango de tolerancia. En tal caso no se sigue trabajando con las líneas que corresponden a los frames de comercial, y se coloca el puntero en la posición del último frame de la máscara en el vector de ``calces''.
+\item Al encontrar un comercial, se guarda el número del frame inicial y final del calce y se calcula el tiempo de inicio y fin del comercial. Estos datos se guardan en un archivo \verb+.m3u+ para crear la lista de reproducción que reporta las detecciones.
 \end{enumerate}
 
 \begin{table}[]
@@ -228,6 +239,13 @@ Id comercial & frame \\ \midrule
 \captionsetup{justification=centering,margin=2cm}
 \caption{Bosquejo de la máscara de un comercial creada para la configuración de 1 descriptor cada 30 frames\label{tab:mask}}
 \end{table}
+
+\begin{figure}[ht!]
+\centering 
+\captionsetup{justification=centering,margin=2cm}
+\includegraphics[scale=0.6]{img/matcheo.png}
+\caption{Esquema del proceso de detección de comerciales sobre el vector de ``calces'' usando máscaras.\label{fig:match}}
+\end{figure} 
 
 \section{Experimentos y resultados}
 \begin{table}[]
